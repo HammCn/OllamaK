@@ -11,7 +11,7 @@ import SwiftUI
 struct OllamaKApp: App {
     var body: some Scene {
         WindowGroup {
-            HomeView()
+            HomeView().colorScheme(.dark).foregroundStyle(.primary)
         }
     }
 }

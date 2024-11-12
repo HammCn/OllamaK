@@ -8,57 +8,33 @@
 import SwiftUI
 
 struct HomeView: View {
-    private let  CONFIG_PATH = "config.json"
     @State private var content = ""
-    private var title = "1"
-    
+    @State private var title = "Hi OllamaK!"
     @State private var isConnected  = true
-    @State private var showServiceSettings = false
-    @State private var showConfig = false
-    @State private var ollamaConfig: OllamaConfig?
-    
-    
-    private func send()  {
-        print("按钮被点击了")
-    }
-    
-    private func getOllamaConfig(openDialog: Bool)  {
-        guard let CONFIG_URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent(CONFIG_PATH) else {
-            print("无法获取文件路径")
-            return
-        }
-        do {
-            // 从文件读取JSON数据
-            let JSON_STRING = try Data(contentsOf: CONFIG_URL)
-            
-            // 解码JSON数据为OllamaConfig对象
-            let OLLAMA_CONFIG = try JSONDecoder().decode(OllamaConfig.self, from: JSON_STRING)
-            
-            // 更新状态变量
-            ollamaConfig = OLLAMA_CONFIG
-        } catch {
-            print("请先配置网关")
-            if(openDialog){
-                showServiceSettings = true
-            }
-        }
-    }
+    @State private var showSetting = false
+    @State private var showSelectModel = false
+    @State private var messages: [OllamaMessage] = []
+    @State private var models: [OllamaModel] = []
     
     var body: some View {
         NavigationStack {
             VStack {
                 if (isConnected) {
                     ScrollView {
-                        Text("Hello")
+                        ForEach(messages){message in
+                            if(message.role == OllamaMessage.ROLE_ASSISTANT) {
+                                MessageAssistantView()
+                            }
+                        }
+                        Spacer()
                     }
                     HStack{
                         Button(action: send) {
-                            Image(systemName: "gear")
+                            Image(systemName: "plus.circle.fill")
                                 .resizable()
-                                .frame(width: 24, height: 24)
-                                .foregroundStyle(.orange)
+                                .frame(width: 32, height: 32)
                         }
-                        TextField("请输入内容", text: $content)
+                        TextField("你可以和我聊任何事情...", text: $content)
                             .onSubmit(send)
                             .submitLabel(.send)
                             .padding(.horizontal, 16)
@@ -70,41 +46,93 @@ struct HomeView: View {
                             .padding(.horizontal, 5)
                         
                         Button(action: send) {
-                            Image(systemName: "paperplane")
+                            Image(systemName: "chevron.up.circle.fill")
                                 .resizable()
-                                .frame(width: 24, height: 24)
-                                .foregroundStyle(content.isEmpty ? .gray : .orange)
+                                .frame(width: 32, height: 32)
+                                .foregroundStyle(content.isEmpty ? .gray : .primary)
                         }
                         .disabled(content.isEmpty)
                     }
                 }else{
-                    ConnectFirstView()
+                    SettingTipView()
                         .onTapGesture {
-                            showServiceSettings = true
+                            showSetting = true
                         }
                 }
             }
             .padding()
-            .navigationTitle(isConnected ? title : "OllamaK")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle(title)
+            .navigationBarTitleDisplayMode(.automatic)
             .toolbar(content: {
-                Button {
-                    showConfig = true
-                } label: {
-                    Image(systemName: "gear")
-                        .scaleEffect(1)
-                        .foregroundStyle(.orange)
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        showSetting = true
+                    }) {
+                        Image(systemName: "clock.badge")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                            .scaleEffect(1)
+                    }
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Menu {
+                        Button(action: {
+                            showSetting = true
+                        }) {
+                            HStack{
+                                Text("Setting")
+                                Image(systemName: "gear")
+                            }
+                        }
+                        Button(action: {
+                            showSetting = true
+                        }) {
+                            HStack{
+                                Text("About")
+                                Image(systemName: "questionmark.circle")
+                            }
+                        }
+                    } label: {
+                        Image(systemName: "gear")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                            .scaleEffect(1)
+                    }
                 }
             })
-            .navigationDestination(isPresented: $showServiceSettings) {
-                ServiceConfigView()
-            }
-            .navigationDestination(isPresented: $showConfig) {
-                ConfigView()
-            }
+            .sheet(isPresented: $showSetting, onDismiss: {
+                reloadConfig()
+            }, content: {
+                SettingView()
+            })
         }
         .onAppear{
-            getOllamaConfig(openDialog: true)
+            reloadConfig()
+        }
+    }
+    
+    
+    
+    private func send()  {
+        print("按钮被点击了")
+        messages.append(OllamaMessage.init(role: OllamaMessage.ROLE_USER,content: content))
+        // 发请求到 ollama 服务
+        let request = OllamaRequest(model: title, messages: messages)
+        print(request)
+        
+    }
+    
+    private func reloadConfig(){
+        print("加载配置")
+        Task{
+            let config = await OllamaConfig.getConfig()
+            if(config == nil){
+                showSetting = true
+                return
+            }
+            models = config?.models ?? []
+            title = OllamaConfig.current!.model
         }
     }
 }
