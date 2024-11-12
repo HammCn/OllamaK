@@ -32,12 +32,12 @@ struct HomeView: View {
                         Button(action: send) {
                             Image(systemName: "plus.circle.fill")
                                 .resizable()
-                                .frame(width: 32, height: 32)
+                                .frame(width: 28, height: 28)
                         }
                         TextField("你可以和我聊任何事情...", text: $content)
                             .onSubmit(send)
                             .submitLabel(.send)
-                            .padding(.horizontal, 16)
+                            .padding(.horizontal, 12)
                             .padding(.vertical, 12)
                             .background(
                                 RoundedRectangle(cornerRadius: 12)
@@ -48,7 +48,7 @@ struct HomeView: View {
                         Button(action: send) {
                             Image(systemName: "chevron.up.circle.fill")
                                 .resizable()
-                                .frame(width: 32, height: 32)
+                                .frame(width: 28, height: 28)
                                 .foregroundStyle(content.isEmpty ? .gray : .primary)
                         }
                         .disabled(content.isEmpty)
