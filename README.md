@@ -1,5 +1,8 @@
 # Hi, OllamaK!
 
+[Github](https://github.com/HammCn/OllamaK) | 
+[Gitee](https://gitee.com/hamm/OllamaK) 
+
 ### 项目说明
 
 这是一个 `Swift + SwiftUI` 实现的 `iOS` 端的 `Ollama` 客户端，可通过配置 `Ollama Server Url` 后调用本地的 `Ollama` 模型进行对话。
