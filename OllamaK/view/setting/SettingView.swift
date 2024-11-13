@@ -129,6 +129,8 @@ struct SettingView: View {
             models =  try await OllamaConfig.getModels(url: url)
             if(model.isEmpty){
                 model = models[0].name
+            }else if(!models.contains(where: {$0.name == model})){
+                model = models[0].name
             }
             isOllamaRespond = true
         }catch{
