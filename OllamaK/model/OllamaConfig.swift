@@ -17,11 +17,6 @@ struct OllamaConfig :Codable{
     var url :String
     
     /*
-     API Token
-     */
-    var token: String
-    
-    /*
      提示词
      */
     var prompt:String
@@ -50,11 +45,8 @@ struct OllamaConfig :Codable{
             return nil
         }
         do {
-            // 从文件读取JSON数据
-            let JSON_STRING = try Data(contentsOf: CONFIG_URL)
-            
-            // 解码JSON数据为OllamaConfig对象
-            var config = try JSONDecoder().decode(OllamaConfig.self, from: JSON_STRING)
+            let data = try Data(contentsOf: CONFIG_URL)
+            var config = try JSONDecoder().decode(OllamaConfig.self, from: data)
             config.models = try await getModels(url: config.url)
             print("获取OllamaConfig", config)
             OllamaConfig.current = config
@@ -65,27 +57,21 @@ struct OllamaConfig :Codable{
         }
     }
     
+    /*
+     获取模型列表
+     */
     public static func getModels(url: String) async throws -> [OllamaModel] {
         let ollamaUrl = "\(url)/api/tags"
-        guard let url = URL(string: ollamaUrl) else {
+        guard let requestUrl = URL(string: ollamaUrl) else {
             throw URLError(.badURL)
         }
-        print(ollamaUrl)
-        
-        let (data, response) = try await URLSession.shared.data(from: url)
-        
+        var request = URLRequest(url: requestUrl)
+        request.httpMethod = "GET"
+        let (data, response) = try await URLSession.shared.data(for: request)
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
             throw URLError(.badServerResponse)
         }
-        
-        do {
-            // 解析数据
-            let modelResponse = try JSONDecoder().decode(OllamaModelResponse.self, from: data)
-            print("Fetched models: \(modelResponse.models)")
-            return modelResponse.models
-        } catch {
-            print("Error parsing JSON: \(error)")
-            throw error
-        }
+        let modelResponse = try JSONDecoder().decode(OllamaModelResponse.self, from: data)
+        return modelResponse.models
     }
 }

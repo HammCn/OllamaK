@@ -6,14 +6,77 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		313F8BA92CE48F630061DA69 /* MarkdownView in Frameworks */ = {isa = PBXBuildFile; productRef = 313F8BA82CE48F630061DA69 /* MarkdownView */; };
+		313F8BAC2CE4934B0061DA69 /* Markdown in Frameworks */ = {isa = PBXBuildFile; productRef = 313F8BAB2CE4934B0061DA69 /* Markdown */; };
+		31D71B332CE4B84700068CA8 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D71B282CE4B84700068CA8 /* HomeView.swift */; };
+		31D71B342CE4B84700068CA8 /* OllamaKApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D71B292CE4B84700068CA8 /* OllamaKApp.swift */; };
+		31D71B362CE4B84700068CA8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 31D71B272CE4B84700068CA8 /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		3101CFC52CE3523500F3D7C7 /* OllamaK.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OllamaK.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		31D71B272CE4B84700068CA8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		31D71B282CE4B84700068CA8 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		31D71B292CE4B84700068CA8 /* OllamaKApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OllamaKApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		31D71B522CE4B84D00068CA8 /* Exceptions for "model" folder in "OllamaK" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				message/OllamaChatRequest.swift,
+				message/OllamaChatResponse.swift,
+				message/OllamaMessage.swift,
+				OllamaConfig.swift,
+				response/OllamaModelResponse.swift,
+			);
+			target = 3101CFC42CE3523500F3D7C7 /* OllamaK */;
+		};
+		31D71B532CE4B84D00068CA8 /* Exceptions for "Preview Content" folder in "OllamaK" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Preview Assets.xcassets",
+			);
+			target = 3101CFC42CE3523500F3D7C7 /* OllamaK */;
+		};
+		31D71B542CE4B84D00068CA8 /* Exceptions for "util" folder in "OllamaK" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				StreamRequestUtil.swift,
+			);
+			target = 3101CFC42CE3523500F3D7C7 /* OllamaK */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		3101CFC72CE3523500F3D7C7 /* OllamaK */ = {
+		31D71B3E2CE4B84D00068CA8 /* model */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = OllamaK;
+			exceptions = (
+				31D71B522CE4B84D00068CA8 /* Exceptions for "model" folder in "OllamaK" target */,
+			);
+			path = model;
+			sourceTree = "<group>";
+		};
+		31D71B402CE4B84D00068CA8 /* Preview Content */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				31D71B532CE4B84D00068CA8 /* Exceptions for "Preview Content" folder in "OllamaK" target */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		31D71B422CE4B84D00068CA8 /* util */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				31D71B542CE4B84D00068CA8 /* Exceptions for "util" folder in "OllamaK" target */,
+			);
+			path = util;
+			sourceTree = "<group>";
+		};
+		31D71B472CE4B84D00068CA8 /* view */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = view;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -23,6 +86,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				313F8BA92CE48F630061DA69 /* MarkdownView in Frameworks */,
+				313F8BAC2CE4934B0061DA69 /* Markdown in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -32,7 +97,7 @@
 		3101CFBC2CE3523500F3D7C7 = {
 			isa = PBXGroup;
 			children = (
-				3101CFC72CE3523500F3D7C7 /* OllamaK */,
+				31D71B552CE4B86B00068CA8 /* OllamaK */,
 				3101CFC62CE3523500F3D7C7 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -43,6 +108,20 @@
 				3101CFC52CE3523500F3D7C7 /* OllamaK.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		31D71B552CE4B86B00068CA8 /* OllamaK */ = {
+			isa = PBXGroup;
+			children = (
+				31D71B3E2CE4B84D00068CA8 /* model */,
+				31D71B402CE4B84D00068CA8 /* Preview Content */,
+				31D71B422CE4B84D00068CA8 /* util */,
+				31D71B472CE4B84D00068CA8 /* view */,
+				31D71B272CE4B84700068CA8 /* Assets.xcassets */,
+				31D71B282CE4B84700068CA8 /* HomeView.swift */,
+				31D71B292CE4B84700068CA8 /* OllamaKApp.swift */,
+			);
+			path = OllamaK;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -61,10 +140,12 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				3101CFC72CE3523500F3D7C7 /* OllamaK */,
+				31D71B472CE4B84D00068CA8 /* view */,
 			);
 			name = OllamaK;
 			packageProductDependencies = (
+				313F8BA82CE48F630061DA69 /* MarkdownView */,
+				313F8BAB2CE4934B0061DA69 /* Markdown */,
 			);
 			productName = OllamaK;
 			productReference = 3101CFC52CE3523500F3D7C7 /* OllamaK.app */;
@@ -94,6 +175,10 @@
 			);
 			mainGroup = 3101CFBC2CE3523500F3D7C7;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				313F8BA72CE48F630061DA69 /* XCRemoteSwiftPackageReference "MarkdownView" */,
+				313F8BAA2CE4934B0061DA69 /* XCRemoteSwiftPackageReference "swift-markdown" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3101CFC62CE3523500F3D7C7 /* Products */;
 			projectDirPath = "";
@@ -109,6 +194,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				31D71B362CE4B84700068CA8 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,6 +205,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				31D71B332CE4B84700068CA8 /* HomeView.swift in Sources */,
+				31D71B342CE4B84700068CA8 /* OllamaKApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -324,6 +412,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		313F8BA72CE48F630061DA69 /* XCRemoteSwiftPackageReference "MarkdownView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/keitaoouchi/MarkdownView.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.9.1;
+			};
+		};
+		313F8BAA2CE4934B0061DA69 /* XCRemoteSwiftPackageReference "swift-markdown" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/swiftlang/swift-markdown";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.5.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		313F8BA82CE48F630061DA69 /* MarkdownView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 313F8BA72CE48F630061DA69 /* XCRemoteSwiftPackageReference "MarkdownView" */;
+			productName = MarkdownView;
+		};
+		313F8BAB2CE4934B0061DA69 /* Markdown */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 313F8BAA2CE4934B0061DA69 /* XCRemoteSwiftPackageReference "swift-markdown" */;
+			productName = Markdown;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3101CFBD2CE3523500F3D7C7 /* Project object */;
 }

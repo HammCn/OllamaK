@@ -18,7 +18,3 @@ struct SettingTipView: View {
             .foregroundColor(.gray)
     }
 }
-
-#Preview {
-    SettingTipView()
-}

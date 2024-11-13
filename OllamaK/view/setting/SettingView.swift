@@ -9,7 +9,6 @@ import SwiftUI
 
 struct SettingView: View {
     @State private var  url = ""
-    @State private var  token = ""
     @State private var  model = ""
     @State private var  prompt = ""
     @FocusState private var focusedField: Field?
@@ -25,7 +24,7 @@ struct SettingView: View {
     @State private var models: [OllamaModel] = []
     
     enum Field {
-        case url, token,defaultPrompt, defaultModel
+        case url,prompt, model
     }
     
     var body: some View {
@@ -35,6 +34,7 @@ struct SettingView: View {
                     TextField("Ollama URL...", text: $url)
                         .submitLabel(.next)
                         .focused($focusedField, equals: .url)
+                        .keyboardType(.URL)
                         .onChange(of: url){
                             Task{
                                 await getModels()
@@ -46,28 +46,21 @@ struct SettingView: View {
                             }
                         }
                 }
-                .keyboardType(.URL)
-                Section("API TOKEN") {
-                    TextField("API TOKEN...", text: $token)
-                        .focused($focusedField, equals: .token)
-                        .submitLabel(.next)
-                        .keyboardType(.emailAddress)
-                        .onSubmit {
-                            focusedField = .defaultPrompt
-                        }
-                }
-                Section("System Prompt") {
+                
+                Section("系统提示词") {
                     TextEditor(text: $prompt)
-                        .focused($focusedField, equals: .defaultPrompt)
+                        .focused($focusedField, equals: .prompt)
                 }
-                Section("Select Model") {
-                    Picker(selection: $model, label: Text("Select")) {
+                
+                Section("选择模型") {
+                    Picker(selection: $model, label: Text("请选择")) {
                         ForEach(models)  {model in
                             Text(model.name).tag(model.name)
                         }
                     }
                     .pickerStyle(.menu)
                 }
+                
             }
             .onChange(of: focusedField, {
                 if(focusedField != .url){
@@ -76,7 +69,7 @@ struct SettingView: View {
                     }
                 }
             })
-            .navigationTitle("Setting")
+            .navigationTitle("服务配置")
             .navigationBarTitleDisplayMode(.automatic)
             .onTapGesture {
                 Task{
@@ -85,26 +78,25 @@ struct SettingView: View {
             }
             .toolbar {
                 Button {
-                    let ollamaConfig = OllamaConfig.init(url: url, token: token, prompt: prompt, model: model, models: [])
+                    let ollamaConfig = OllamaConfig.init(url: url, prompt: prompt, model: model, models: [])
                     saveOllamaConfig(ollamaConfig: ollamaConfig)
                     self.presentationMode.wrappedValue.dismiss()
                 } label: {
-                    Text("Save")
+                    Text("保存")
                 }
                 .disabled(!isOllamaRespond  || model.isEmpty)
                 .foregroundStyle(!isOllamaRespond || model.isEmpty ? Color.gray : Color.primary)
             }
         }
         .alert(isPresented: $showAlert) {
-            Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+            Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("确定")))
         }
         .colorScheme(.dark)
         .onAppear(){
-            print(OllamaConfig.current)
+            print(OllamaConfig.current!)
             url = OllamaConfig.current?.url ?? "https://ollama.hamm.cn"
             model = OllamaConfig.current?.model ?? ""
-            prompt = OllamaConfig.current?.prompt ?? "You are a helpful assistant"
-            token = OllamaConfig.current?.token ?? ""
+            prompt = OllamaConfig.current?.prompt ?? "你是个中文工作助理，擅长解决各种问题"
             Task{
                 await getModels()
             }
@@ -118,7 +110,7 @@ struct SettingView: View {
         }
         do {
             let encoder = JSONEncoder()
-            encoder.outputFormatting = .prettyPrinted // 可选：使 JSON 更易读
+            encoder.outputFormatting = .prettyPrinted
             
             let data = try encoder.encode(ollamaConfig)
             
@@ -131,6 +123,7 @@ struct SettingView: View {
     
     private func getModels() async{
         isOllamaRespond = false
+        models = []
         // 发起网络请求
         do {
             models =  try await OllamaConfig.getModels(url: url)
@@ -142,8 +135,4 @@ struct SettingView: View {
             isOllamaRespond = false
         }
     }
-}
-
-#Preview {
-    SettingView()
 }
