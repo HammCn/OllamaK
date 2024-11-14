@@ -54,6 +54,11 @@ struct HomeView: View {
     @FocusState private var focusedField: Field?
 
     /*
+     最后消息的标记
+     */
+    private let lastMessageTag = "message-list"
+
+    /*
      输入焦点枚举
      */
     private enum Field {
@@ -73,7 +78,7 @@ struct HomeView: View {
                         ScrollViewReader { proxy in
                             ScrollView {
                                 MessageListView(messages: $messages)
-                                Text("").id("message-list")
+                                Text("").id(lastMessageTag)
                             }
                             .padding(0)
                             .onAppear {
@@ -94,6 +99,12 @@ struct HomeView: View {
             .onTapGesture {
                 focusedField = nil
             }
+            .onChange(
+                of: focusedField,
+                {
+                    scrollToBottom()
+                }
+            )
             .navigationTitle(title)
             .navigationBarTitleDisplayMode(.automatic)
             .toolbar(
@@ -266,6 +277,9 @@ struct HomeView: View {
      发送
      */
     private func send() async {
+        if isRequesting {
+            return
+        }
         isRequesting = true
         messages.append(
             OllamaMessage.init(
@@ -308,13 +322,19 @@ struct HomeView: View {
         }
         OllamaMessage.saveMessage(messages: messages)
         isRequesting = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            focusedField = .message
+        }
     }
 
     /*
      滚动到底部
      */
     private func scrollToBottom() {
-        scrollViewProxy?.scrollTo("message-list", anchor: .bottom)
+        scrollViewProxy?.scrollTo(lastMessageTag, anchor: .bottom)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            scrollViewProxy?.scrollTo(lastMessageTag, anchor: .bottom)
+        }
     }
 
     /*
