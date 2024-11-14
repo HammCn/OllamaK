@@ -11,9 +11,10 @@ struct EmptyStatusView: View {
     /*
      空白消息
      */
-    public var message: String
-    
+    public var message: String = "Error"
+
     var body: some View {
+        Spacer()
         Image(systemName: "moon.stars")
             .scaleEffect(3)
             .padding(.bottom, 30)
@@ -21,5 +22,6 @@ struct EmptyStatusView: View {
         Text(message)
             .font(Font.system(size: 13))
             .foregroundColor(.gray)
+        Spacer()
     }
 }

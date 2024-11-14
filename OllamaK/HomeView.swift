@@ -24,6 +24,11 @@ struct HomeView: View {
     @State private var showSetting = false
 
     /*
+     是否显示历史消息窗口
+     */
+    @State private var showMessageHistory = false
+
+    /*
      当前消息列表
      */
     @State private var messages: [OllamaMessage] = []
@@ -47,15 +52,19 @@ struct HomeView: View {
         NavigationStack {
             VStack {
                 if isConnected {
-                    ScrollViewReader { proxy in
-                        ScrollView {
-                            MessageListView(messages: $messages)
-                            Text("").id("message-list")
+                    if $messages.count > 1 {
+                        ScrollViewReader { proxy in
+                            ScrollView {
+                                MessageListView(messages: $messages)
+                                Text("").id("message-list")
+                            }
+                            .padding(0)
+                            .onAppear {
+                                scrollViewProxy = proxy
+                            }
                         }
-                        .padding(0)
-                        .onAppear {
-                            scrollViewProxy = proxy
-                        }
+                    } else {
+                        EmptyStatusView(message: "消息都被你删完了哦～")
                     }
                     FooterArea()
                 } else {
@@ -71,26 +80,37 @@ struct HomeView: View {
                 content: {
                     TopRightButton()
                 })
-                .sheet(
-                    isPresented: $showSetting,
-                    onDismiss: {
-                        reloadConfig()
-                    },
-                    content: {
-                        SettingView()
-                    })
         }
+        .sheet(
+            isPresented: $showSetting,
+            onDismiss: {
+                reloadConfig()
+            },
+            content: {
+                SettingView()
+            }
+        )
+        .sheet(
+            isPresented: $showMessageHistory,
+            onDismiss: {
+                reloadMessage()
+            },
+            content: {
+                MessageHistoryView()
+            }
+        )
         .onAppear {
             reloadConfig()
         }
     }
-    
+
     /*
      输入框左侧菜单
      */
     private func InputLeftMenu() -> some View {
         return Menu {
             Button {
+                MessageHistory.addToHistory(messages: messages)
                 messages = []
                 addSystemPromptMessage()
             } label: {
@@ -100,10 +120,10 @@ struct HomeView: View {
                         isRequesting ? .gray : .primary
                     )
             }
+            .disabled(messages.count < 2)
 
             Button {
-                messages = []
-                addSystemPromptMessage()
+                showMessageHistory = true
             } label: {
                 Text("会话历史")
                 Image(systemName: "clock.badge")
@@ -265,6 +285,7 @@ struct HomeView: View {
             messages[messages.count - 1] = lastMessage
             scrollToBottom()
         }
+        OllamaMessage.saveMessage(messages: messages)
         isRequesting = false
     }
 
@@ -287,6 +308,16 @@ struct HomeView: View {
                 )
             )
         }
+        OllamaMessage.saveMessage(messages: messages)
+    }
+
+    /*
+     重新加载消息
+     */
+    private func reloadMessage() {
+        messages = OllamaMessage.getMessage()
+        addSystemPromptMessage()
+        scrollToBottom()
     }
 
     /*
@@ -302,7 +333,7 @@ struct HomeView: View {
             }
             title = OllamaConfig.current!.model
             isConnected = true
-            addSystemPromptMessage()
+            reloadMessage()
         }
     }
 }

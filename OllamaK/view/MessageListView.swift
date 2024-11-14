@@ -14,38 +14,64 @@ struct MessageListView: View {
     @Binding public var messages: [OllamaMessage]
 
     var body: some View {
-        ForEach($messages, id: \.id) { $message in
-            let config = getMessageItemConfig(role: message.role)
+        ForEach($messages.filter({ item in
+            return OllamaMessage.ROLE_SYSTEM != item.role.wrappedValue
+        }), id: \.id
+        ) { $message in
+            MessageItem(message: message)
+        }.padding(0)
+    }
+
+    /*
+     单条消息
+     */
+    private func MessageItem(message: OllamaMessage) -> some View {
+        let config = getMessageItemConfig(role: message.role)
+        return HStack {
             HStack {
-                HStack {
-                    if message.role != OllamaMessage.ROLE_ASSISTANT {
-                        Spacer()
+                if message.role != OllamaMessage.ROLE_ASSISTANT {
+                    Spacer()
+                }
+                Text(message.content)
+                    .font(
+                        .system(
+                            size: config.fontSize)
+                    )
+                    .padding(12)
+                    .foregroundColor(.gray)
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(
+                                config.bgColor
+                                    .opacity(0.1))
+                    )
+                    .padding(.leading, config.paddingLeft)
+                    .padding(.trailing, config.paddingRight)
+                    .padding(.vertical, config.verticalPadding)
+                    .contextMenu {
+                        Button {
+                            deleteMessage(item: message)
+                        } label: {
+                            Label("删除这条消息", systemImage: "trash")
+                        }
                     }
-                    Text(message.content)
-                        .font(
-                            .system(
-                                size: config.fontSize)
-                        )
-                        .padding(12)
-                        .foregroundColor(.gray)
-                        .background(
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(
-                                    config.bgColor
-                                        .opacity(0.1))
-                        )
-                        .padding(.leading, config.paddingLeft)
-                        .padding(.trailing, config.paddingRight)
-                        .padding(.vertical, config.verticalPadding)
-                    if message.role != OllamaMessage.ROLE_USER {
-                        Spacer()
-                    }
+                if message.role != OllamaMessage.ROLE_USER {
+                    Spacer()
                 }
             }
-        }.padding(0)
-        Spacer()
+        }
     }
     
+    /*
+     删除指定索引的历史
+     */
+    private func deleteMessage(item: OllamaMessage) {
+        if let index = messages.firstIndex(where: { $0.id == item.id }) {
+            messages.remove(at: index)
+        }
+        OllamaMessage.saveMessage(messages: messages)
+    }
+
     /*
      获取消息配置
      */
