@@ -8,30 +8,56 @@
 import SwiftUI
 
 struct HomeView: View {
+    /*
+     窗口标题
+     */
     @State private var title = "Hi OllamaK!"
-    @State private var isConnected  = true
+
+    /*
+     是否已连接模型服务
+     */
+    @State private var isConnected = true
+
+    /*
+     是否显示设置窗口
+     */
     @State private var showSetting = false
-    
+
+    /*
+     当前消息列表
+     */
     @State private var messages: [OllamaMessage] = []
-    
-    @State private var isRequesting  = false
+
+    /*
+     是否正在请求中
+     */
+    @State private var isRequesting = false
+
+    /*
+     输入的内容
+     */
     @State private var inputContent = ""
-    
+
+    /*
+     滚动代理
+     */
+    @State private var scrollViewProxy: ScrollViewProxy?
+
     var body: some View {
         NavigationStack {
             VStack {
-                if (isConnected) {
+                if isConnected {
                     ScrollViewReader { proxy in
                         ScrollView {
                             MessageListView(messages: $messages)
                             Text("").id("message-list")
                         }
                         .padding(0)
-                        .onAppear(){
+                        .onAppear {
                             scrollViewProxy = proxy
                         }
                     }
-                    HStack{
+                    HStack {
                         Menu {
                             Button {
                                 messages = []
@@ -43,7 +69,7 @@ struct HomeView: View {
                                         isRequesting ? .gray : .primary
                                     )
                             }
-                            
+
                             Button {
                                 messages = []
                                 addSystemPromptMessage()
@@ -54,7 +80,7 @@ struct HomeView: View {
                                         isRequesting ? .gray : .primary
                                     )
                             }
-                            
+
                         } label: {
                             Image(systemName: "plus.circle.fill")
                                 .resizable()
@@ -66,7 +92,7 @@ struct HomeView: View {
                             text: $inputContent
                         )
                         .onSubmit {
-                            Task{
+                            Task {
                                 await send()
                             }
                         }
@@ -81,24 +107,28 @@ struct HomeView: View {
                         .padding(.horizontal, 5)
                         Button(
                             action: {
-                                Task{
+                                Task {
                                     await send()
                                 }
                             },
                             label: {
                                 Image(
-                                    systemName: isRequesting ? "ellipsis.circle" : "chevron.up.circle.fill"
+                                    systemName: isRequesting
+                                        ? "ellipsis.circle"
+                                        : "chevron.up.circle.fill"
                                 )
                                 .resizable()
                                 .frame(width: 28, height: 28)
-                                .foregroundStyle(inputContent.isEmpty || isRequesting ? .gray : .primary)
+                                .foregroundStyle(
+                                    inputContent.isEmpty || isRequesting
+                                        ? .gray : .primary)
                             }
                         )
                         .disabled(inputContent.isEmpty || isRequesting)
                     }
-                    .padding(.horizontal,15)
+                    .padding(.horizontal, 15)
                     .padding(.vertical, 5)
-                    .padding(.bottom,10)
+                    .padding(.bottom, 10)
                 } else {
                     SettingTipView()
                         .onTapGesture {
@@ -110,23 +140,12 @@ struct HomeView: View {
             .navigationBarTitleDisplayMode(.automatic)
             .toolbar(
                 content: {
-//                    ToolbarItem(placement: .navigationBarLeading) {
-//                        Button(action: {
-//                            showSetting = true
-//                        }) {
-//                            Image(systemName: "clock.badge")
-//                                .resizable()
-//                                .frame(width: 24, height: 24)
-//                                .scaleEffect(1)
-//                        }
-//                    }
-                    
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Menu {
                             Button(action: {
                                 showSetting = true
                             }) {
-                                HStack{
+                                HStack {
                                     Text("服务配置")
                                     Image(systemName: "wifi.router")
                                 }
@@ -134,11 +153,12 @@ struct HomeView: View {
                             Button(
                                 action: {
                                     let url = URL(
-                                        string: "https://github.com/HammCn/OllamaK"
+                                        string:
+                                            "https://github.com/HammCn/OllamaK"
                                     )!
                                     UIApplication.shared.open(url)
                                 }) {
-                                    HStack{
+                                    HStack {
                                         Text("关于项目")
                                         Image(systemName: "book.and.wrench")
                                     }
@@ -152,45 +172,50 @@ struct HomeView: View {
                         .disabled(isRequesting)
                     }
                 })
-            .sheet(isPresented: $showSetting, onDismiss: {
-                reloadConfig()
-            }, content: {
-                SettingView()
-            })
+                .sheet(
+                    isPresented: $showSetting,
+                    onDismiss: {
+                        reloadConfig()
+                    },
+                    content: {
+                        SettingView()
+                    })
         }
-        .onAppear{
+        .onAppear {
             reloadConfig()
         }
     }
-    
+
+    /*
+     发送
+     */
     private func send() async {
         isRequesting = true
-        messages
-            .append(
-                OllamaMessage.init(
-                    role: OllamaMessage.ROLE_USER,
-                    content: inputContent
-                )
+        messages.append(
+            OllamaMessage.init(
+                role: OllamaMessage.ROLE_USER,
+                content: inputContent
             )
+        )
         inputContent = ""
-        messages
-            .append(
-                OllamaMessage.init(
-                    role: OllamaMessage.ROLE_ASSISTANT,
-                    content: ""
-                )
+        messages.append(
+            OllamaMessage.init(
+                role: OllamaMessage.ROLE_ASSISTANT,
+                content: ""
             )
+        )
         scrollToBottom()
         let ollamaRequest = OllamaChatRequest(model: title, messages: messages)
-        
+
         let ollamaUrl = OllamaConfig.current!.url + "/api/chat"
-        
+
         let jsonData = try? JSONEncoder().encode(ollamaRequest)
         do {
-            let stream: AsyncThrowingStream = try await StreamRequestUtil.request(
-                apiURL: ollamaUrl,
-                data: jsonData!
-            )
+            let stream: AsyncThrowingStream =
+                try await StreamRequestUtil.request(
+                    apiURL: ollamaUrl,
+                    data: jsonData!
+                )
             for try await text in stream {
                 await MainActor.run {
                     var lastMessage = messages[messages.count - 1]
@@ -207,31 +232,36 @@ struct HomeView: View {
         }
         isRequesting = false
     }
-    
+
+    /*
+     滚动到底部
+     */
     private func scrollToBottom() {
         scrollViewProxy?.scrollTo("message-list", anchor: .bottom)
     }
-    
-    @State private var scrollViewProxy: ScrollViewProxy?
-    
-    private func addSystemPromptMessage(){
-        if(messages.isEmpty){
-            messages
-                .append(
-                    OllamaMessage.init(
-                        role: OllamaMessage.ROLE_SYSTEM,
-                        content: OllamaConfig.current!.prompt
-                    )
+
+    /*
+     添加Prompt
+     */
+    private func addSystemPromptMessage() {
+        if messages.isEmpty {
+            messages.append(
+                OllamaMessage.init(
+                    role: OllamaMessage.ROLE_SYSTEM,
+                    content: OllamaConfig.current!.prompt
                 )
+            )
         }
     }
-    
-    private func reloadConfig(){
-        print("加载配置")
-        Task{
+
+    /*
+     加载配置
+     */
+    private func reloadConfig() {
+        Task {
             isConnected = false
             let config = await OllamaConfig.getConfig()
-            if(config == nil){
+            if config == nil {
                 showSetting = true
                 return
             }
