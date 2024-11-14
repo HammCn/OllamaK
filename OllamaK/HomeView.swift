@@ -44,6 +44,11 @@ struct HomeView: View {
     @State private var inputContent = ""
 
     /*
+     底部按钮大小
+     */
+    private let footerButtonSize: CGFloat = 28
+
+    /*
      滚动代理
      */
     @State private var scrollViewProxy: ScrollViewProxy?
@@ -135,7 +140,7 @@ struct HomeView: View {
         } label: {
             Image(systemName: "plus.circle.fill")
                 .resizable()
-                .frame(width: 28, height: 28)
+                .frame(width: footerButtonSize, height: footerButtonSize)
         }
         .disabled(isRequesting)
     }
@@ -157,7 +162,7 @@ struct HomeView: View {
                         : "chevron.up.circle.fill"
                 )
                 .resizable()
-                .frame(width: 28, height: 28)
+                .frame(width: footerButtonSize, height: footerButtonSize)
                 .foregroundStyle(
                     inputContent.isEmpty || isRequesting
                         ? .gray : .primary)

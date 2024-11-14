@@ -14,7 +14,7 @@ struct SettingTipView: View {
             .padding(.bottom, 30)
             .foregroundStyle(.gray)
         Text("请先配置Ollama服务参数")
-            .font(Font.system(size: 13))
+            .font(Font.system(size: 14))
             .foregroundColor(.gray)
     }
 }

@@ -55,13 +55,13 @@ struct MessageHistoryView: View {
                 Text(
                     item.time
                 )
-                .font(.system(size: 12))
+                .font(.system(size: 14))
                 .foregroundStyle(.gray)
                 .padding(.bottom, 5)
                 Text(
                     item.messages[1].content
                 )
-                .font(.system(size: 15))
+                .font(.system(size: 16))
             }
         )
         .swipeActions {

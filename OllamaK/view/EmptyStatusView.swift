@@ -20,7 +20,7 @@ struct EmptyStatusView: View {
             .padding(.bottom, 30)
             .foregroundStyle(.gray)
         Text(message)
-            .font(Font.system(size: 13))
+            .font(Font.system(size: 14))
             .foregroundColor(.gray)
         Spacer()
     }

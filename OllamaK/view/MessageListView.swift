@@ -78,15 +78,15 @@ struct MessageListView: View {
     private func getMessageItemConfig(role: String) -> MessageItemConfig {
         if role == OllamaMessage.ROLE_ASSISTANT {
             return MessageItemConfig.init(
-                bgColor: .green, color: .white, paddingLeft: 20,
+                bgColor: .green, color: .white, paddingLeft: 10,
                 paddingRight: 50,
-                verticalPadding: 10, fontSize: 15)
+                verticalPadding: 10, fontSize: 16)
         }
         if role == OllamaMessage.ROLE_USER {
             return MessageItemConfig(
                 bgColor: .orange, color: .white, paddingLeft: 50,
-                paddingRight: 20,
-                verticalPadding: 10, fontSize: 15)
+                paddingRight: 10,
+                verticalPadding: 10, fontSize: 16)
         }
         return MessageItemConfig.init(
             bgColor: .gray, color: .gray, paddingLeft: 5, paddingRight: 5,
