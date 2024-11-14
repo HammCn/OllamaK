@@ -49,6 +49,18 @@ struct HomeView: View {
     private let footerButtonSize: CGFloat = 28
 
     /*
+     输入框焦点
+     */
+    @FocusState private var focusedField: Field?
+
+    /*
+     输入焦点枚举
+     */
+    private enum Field {
+        case message
+    }
+
+    /*
      滚动代理
      */
     @State private var scrollViewProxy: ScrollViewProxy?
@@ -78,6 +90,9 @@ struct HomeView: View {
                             showSetting = true
                         }
                 }
+            }
+            .onTapGesture {
+                focusedField = nil
             }
             .navigationTitle(title)
             .navigationBarTitleDisplayMode(.automatic)
@@ -179,6 +194,7 @@ struct HomeView: View {
             isRequesting ? "思考中..." : "说点什么吧...",
             text: $inputContent
         )
+        .focused($focusedField, equals: .message)
         .onSubmit {
             Task {
                 await send()

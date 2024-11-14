@@ -32,7 +32,7 @@ struct MessageListView: View {
                 if message.role != OllamaMessage.ROLE_ASSISTANT {
                     Spacer()
                 }
-                Text(message.content)
+                Text(message.content.isEmpty ? "." : message.content)
                     .font(
                         .system(
                             size: config.fontSize)
