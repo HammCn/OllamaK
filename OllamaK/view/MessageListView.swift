@@ -13,27 +13,6 @@ struct MessageListView: View {
      */
     @Binding public var messages: [OllamaMessage]
 
-    /*
-     获取消息配置
-     */
-    private func getMessageItemConfig(role: String) -> MessageItemConfig {
-        if role == OllamaMessage.ROLE_ASSISTANT {
-            return MessageItemConfig.init(
-                bgColor: .green, color: .white, paddingLeft: 20,
-                paddingRight: 50,
-                verticalPadding: 10, fontSize: 15)
-        }
-        if role == OllamaMessage.ROLE_USER {
-            return MessageItemConfig(
-                bgColor: .orange, color: .white, paddingLeft: 50,
-                paddingRight: 20,
-                verticalPadding: 10, fontSize: 15)
-        }
-        return MessageItemConfig.init(
-            bgColor: .gray, color: .gray, paddingLeft: 5, paddingRight: 5,
-            verticalPadding: 5, fontSize: 12)
-    }
-
     var body: some View {
         ForEach($messages, id: \.id) { $message in
             let config = getMessageItemConfig(role: message.role)
@@ -65,6 +44,27 @@ struct MessageListView: View {
             }
         }.padding(0)
         Spacer()
+    }
+    
+    /*
+     获取消息配置
+     */
+    private func getMessageItemConfig(role: String) -> MessageItemConfig {
+        if role == OllamaMessage.ROLE_ASSISTANT {
+            return MessageItemConfig.init(
+                bgColor: .green, color: .white, paddingLeft: 20,
+                paddingRight: 50,
+                verticalPadding: 10, fontSize: 15)
+        }
+        if role == OllamaMessage.ROLE_USER {
+            return MessageItemConfig(
+                bgColor: .orange, color: .white, paddingLeft: 50,
+                paddingRight: 20,
+                verticalPadding: 10, fontSize: 15)
+        }
+        return MessageItemConfig.init(
+            bgColor: .gray, color: .gray, paddingLeft: 5, paddingRight: 5,
+            verticalPadding: 5, fontSize: 12)
     }
 }
 

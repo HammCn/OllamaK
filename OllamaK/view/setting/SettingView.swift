@@ -52,14 +52,7 @@ struct SettingView: View {
      可选模型列表
      */
     @State private var models: [OllamaModel] = []
-
-    /*
-     输入焦点枚举
-     */
-    enum Field {
-        case url, prompt, model
-    }
-
+    
     var body: some View {
         NavigationView {
             Form {
@@ -113,18 +106,7 @@ struct SettingView: View {
                 }
             }
             .toolbar {
-                Button {
-                    let ollamaConfig = OllamaConfig.init(
-                        url: url, prompt: prompt, model: model, models: [])
-                    saveOllamaConfig(ollamaConfig: ollamaConfig)
-                    self.presentationMode.wrappedValue.dismiss()
-                } label: {
-                    Text("保存")
-                }
-                .disabled(!isOllamaRespond || model.isEmpty)
-                .foregroundStyle(
-                    !isOllamaRespond || model.isEmpty
-                        ? Color.gray : Color.primary)
+                TopRightButton()
             }
         }
         .alert(isPresented: $showAlert) {
@@ -142,6 +124,31 @@ struct SettingView: View {
                 await getModels()
             }
         }
+    }
+    
+    /*
+     顶部右上角按钮
+     */
+    private func TopRightButton() -> some View {
+        return Button {
+            let ollamaConfig = OllamaConfig.init(
+                url: url, prompt: prompt, model: model, models: [])
+            saveOllamaConfig(ollamaConfig: ollamaConfig)
+            self.presentationMode.wrappedValue.dismiss()
+        } label: {
+            Text("保存")
+        }
+        .disabled(!isOllamaRespond || model.isEmpty)
+        .foregroundStyle(
+            !isOllamaRespond || model.isEmpty
+            ? Color.gray : Color.primary)
+    }
+    
+    /*
+     输入焦点枚举
+     */
+    private enum Field {
+        case url, prompt, model
     }
     
     /*

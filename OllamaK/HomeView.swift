@@ -57,78 +57,7 @@ struct HomeView: View {
                             scrollViewProxy = proxy
                         }
                     }
-                    HStack {
-                        Menu {
-                            Button {
-                                messages = []
-                                addSystemPromptMessage()
-                            } label: {
-                                Text("新的篇章")
-                                Image(systemName: "plus.circle.fill")
-                                    .foregroundStyle(
-                                        isRequesting ? .gray : .primary
-                                    )
-                            }
-
-                            Button {
-                                messages = []
-                                addSystemPromptMessage()
-                            } label: {
-                                Text("会话历史")
-                                Image(systemName: "clock.badge")
-                                    .foregroundStyle(
-                                        isRequesting ? .gray : .primary
-                                    )
-                            }
-
-                        } label: {
-                            Image(systemName: "plus.circle.fill")
-                                .resizable()
-                                .frame(width: 28, height: 28)
-                        }
-                        .disabled(isRequesting)
-                        TextField(
-                            isRequesting ? "思考中..." : "说点什么吧...",
-                            text: $inputContent
-                        )
-                        .onSubmit {
-                            Task {
-                                await send()
-                            }
-                        }
-                        .disabled(isRequesting)
-                        .submitLabel(.send)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 12)
-                        .background(
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(Color.gray.opacity(0.1))
-                        )
-                        .padding(.horizontal, 5)
-                        Button(
-                            action: {
-                                Task {
-                                    await send()
-                                }
-                            },
-                            label: {
-                                Image(
-                                    systemName: isRequesting
-                                        ? "ellipsis.circle"
-                                        : "chevron.up.circle.fill"
-                                )
-                                .resizable()
-                                .frame(width: 28, height: 28)
-                                .foregroundStyle(
-                                    inputContent.isEmpty || isRequesting
-                                        ? .gray : .primary)
-                            }
-                        )
-                        .disabled(inputContent.isEmpty || isRequesting)
-                    }
-                    .padding(.horizontal, 15)
-                    .padding(.vertical, 5)
-                    .padding(.bottom, 10)
+                    FooterArea()
                 } else {
                     SettingTipView()
                         .onTapGesture {
@@ -140,37 +69,7 @@ struct HomeView: View {
             .navigationBarTitleDisplayMode(.automatic)
             .toolbar(
                 content: {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Menu {
-                            Button(action: {
-                                showSetting = true
-                            }) {
-                                HStack {
-                                    Text("服务配置")
-                                    Image(systemName: "wifi.router")
-                                }
-                            }
-                            Button(
-                                action: {
-                                    let url = URL(
-                                        string:
-                                            "https://github.com/HammCn/OllamaK"
-                                    )!
-                                    UIApplication.shared.open(url)
-                                }) {
-                                    HStack {
-                                        Text("关于项目")
-                                        Image(systemName: "book.and.wrench")
-                                    }
-                                }
-                        } label: {
-                            Image(systemName: "gear")
-                                .resizable()
-                                .frame(width: 24, height: 24)
-                                .scaleEffect(1)
-                        }
-                        .disabled(isRequesting)
-                    }
+                    TopRightButton()
                 })
                 .sheet(
                     isPresented: $showSetting,
@@ -183,6 +82,142 @@ struct HomeView: View {
         }
         .onAppear {
             reloadConfig()
+        }
+    }
+    
+    /*
+     输入框左侧菜单
+     */
+    private func InputLeftMenu() -> some View {
+        return Menu {
+            Button {
+                messages = []
+                addSystemPromptMessage()
+            } label: {
+                Text("新的篇章")
+                Image(systemName: "plus.circle.fill")
+                    .foregroundStyle(
+                        isRequesting ? .gray : .primary
+                    )
+            }
+
+            Button {
+                messages = []
+                addSystemPromptMessage()
+            } label: {
+                Text("会话历史")
+                Image(systemName: "clock.badge")
+                    .foregroundStyle(
+                        isRequesting ? .gray : .primary
+                    )
+            }
+
+        } label: {
+            Image(systemName: "plus.circle.fill")
+                .resizable()
+                .frame(width: 28, height: 28)
+        }
+        .disabled(isRequesting)
+    }
+
+    /*
+     输入框发送按钮
+     */
+    private func InputSendButton() -> some View {
+        return Button(
+            action: {
+                Task {
+                    await send()
+                }
+            },
+            label: {
+                Image(
+                    systemName: isRequesting
+                        ? "ellipsis.circle"
+                        : "chevron.up.circle.fill"
+                )
+                .resizable()
+                .frame(width: 28, height: 28)
+                .foregroundStyle(
+                    inputContent.isEmpty || isRequesting
+                        ? .gray : .primary)
+            }
+        )
+        .disabled(inputContent.isEmpty || isRequesting)
+    }
+
+    /*
+     输入框
+     */
+    private func InputBox() -> some View {
+        return TextField(
+            isRequesting ? "思考中..." : "说点什么吧...",
+            text: $inputContent
+        )
+        .onSubmit {
+            Task {
+                await send()
+            }
+        }
+        .disabled(isRequesting)
+        .submitLabel(.send)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 12)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color.gray.opacity(0.1))
+        )
+        .padding(.horizontal, 5)
+    }
+
+    /*
+     底部区域
+     */
+    private func FooterArea() -> some View {
+        return HStack {
+            InputLeftMenu()
+            InputBox()
+            InputSendButton()
+        }
+        .padding(.horizontal, 15)
+        .padding(.vertical, 5)
+        .padding(.bottom, 10)
+    }
+
+    /*
+     顶部右上角按钮
+     */
+    private func TopRightButton() -> ToolbarItem<(), some View> {
+        return ToolbarItem(placement: .navigationBarTrailing) {
+            Menu {
+                Button(action: {
+                    showSetting = true
+                }) {
+                    HStack {
+                        Text("服务配置")
+                        Image(systemName: "wifi.router")
+                    }
+                }
+                Button(
+                    action: {
+                        let url = URL(
+                            string:
+                                "https://github.com/HammCn/OllamaK"
+                        )!
+                        UIApplication.shared.open(url)
+                    }) {
+                        HStack {
+                            Text("关于项目")
+                            Image(systemName: "book.and.wrench")
+                        }
+                    }
+            } label: {
+                Image(systemName: "gear")
+                    .resizable()
+                    .frame(width: 24, height: 24)
+                    .scaleEffect(1)
+            }
+            .disabled(isRequesting)
         }
     }
 
