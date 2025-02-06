@@ -116,10 +116,9 @@ struct SettingView: View {
         }
         .colorScheme(.dark)
         .onAppear {
-            print(OllamaConfig.current!)
-            url = OllamaConfig.current?.url ?? "https://ollama.hamm.cn"
+            url = OllamaConfig.current?.url ?? "https://ollama.hamm.cn/"
             model = OllamaConfig.current?.model ?? ""
-            prompt = OllamaConfig.current?.prompt ?? "你是个中文工作助理，擅长解决各种问题"
+            prompt = OllamaConfig.current?.prompt ?? "你是个中文工作助理，擅长解决各种问题。"
             Task {
                 await getModels()
             }
