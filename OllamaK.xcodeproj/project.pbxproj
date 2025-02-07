@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		31AB24B72D55DACE001E185C /* Parma in Frameworks */ = {isa = PBXBuildFile; productRef = 31AB24B62D55DACE001E185C /* Parma */; };
 		31D71B332CE4B84700068CA8 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D71B282CE4B84700068CA8 /* HomeView.swift */; };
 		31D71B342CE4B84700068CA8 /* OllamaKApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D71B292CE4B84700068CA8 /* OllamaKApp.swift */; };
 		31D71B362CE4B84700068CA8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 31D71B272CE4B84700068CA8 /* Assets.xcassets */; };
@@ -86,6 +87,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				31AB24B72D55DACE001E185C /* Parma in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -142,6 +144,7 @@
 			);
 			name = OllamaK;
 			packageProductDependencies = (
+				31AB24B62D55DACE001E185C /* Parma */,
 			);
 			productName = OllamaK;
 			productReference = 3101CFC52CE3523500F3D7C7 /* OllamaK.app */;
@@ -172,6 +175,7 @@
 			mainGroup = 3101CFBC2CE3523500F3D7C7;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				31AB24B52D55DACE001E185C /* XCLocalSwiftPackageReference "../Parma" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3101CFC62CE3523500F3D7C7 /* Products */;
@@ -406,6 +410,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		31AB24B52D55DACE001E185C /* XCLocalSwiftPackageReference "../Parma" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../Parma;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		31AB24B62D55DACE001E185C /* Parma */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Parma;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3101CFBD2CE3523500F3D7C7 /* Project object */;
 }

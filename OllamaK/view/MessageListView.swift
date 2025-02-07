@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Parma
 
 struct MessageListView: View {
     /*
@@ -32,7 +33,7 @@ struct MessageListView: View {
                 if message.role != OllamaMessage.ROLE_ASSISTANT {
                     Spacer()
                 }
-                Text(message.content.isEmpty ? "." : message.content)
+                Parma((message.content.isEmpty ? "." : message.content))
                     .font(
                         .system(
                             size: config.fontSize)
@@ -78,7 +79,7 @@ struct MessageListView: View {
     private func getMessageItemConfig(role: String) -> MessageItemConfig {
         if role == OllamaMessage.ROLE_ASSISTANT {
             return MessageItemConfig.init(
-                bgColor: .green, color: .white, paddingLeft: 10,
+                bgColor: .gray, color: .white, paddingLeft: 10,
                 paddingRight: 50,
                 verticalPadding: 10, fontSize: 16)
         }
