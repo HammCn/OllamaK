@@ -15,6 +15,8 @@ class StreamRequestUtil {
      发请求
      */
     static func request(apiURL: String,data:Data) async throws -> AsyncThrowingStream<String, Swift.Error> {
+        // 替换 apiURL 中的双斜杠
+        let apiURL = apiURL.replacingOccurrences(of: "//", with: "/")
         let url = URL(string: apiURL)!
         
         var request = URLRequest(url: url)

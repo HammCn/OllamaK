@@ -24,6 +24,7 @@
 		31D71B522CE4B84D00068CA8 /* Exceptions for "model" folder in "OllamaK" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				assistant/OllamaAssistant.swift,
 				message/MessageHistory.swift,
 				message/OllamaChatRequest.swift,
 				message/OllamaChatResponse.swift,

@@ -61,7 +61,8 @@ struct OllamaConfig :Codable{
      获取模型列表
      */
     public static func getModels(url: String) async throws -> [OllamaModel] {
-        let ollamaUrl = "\(url)/api/tags"
+        var ollamaUrl = "\(url)/api/tags"
+        ollamaUrl = ollamaUrl.replacingOccurrences(of: "//", with: "/")
         guard let requestUrl = URL(string: ollamaUrl) else {
             throw URLError(.badURL)
         }

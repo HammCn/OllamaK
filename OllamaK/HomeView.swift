@@ -359,7 +359,7 @@ struct HomeView: View {
     }
 
     /*
-     加载配置
+     重新加载配置
      */
     private func reloadConfig() {
         Task {
@@ -374,4 +374,5 @@ struct HomeView: View {
             reloadMessage()
         }
     }
+
 }
